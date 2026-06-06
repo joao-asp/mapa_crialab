@@ -1,0 +1,1 @@
+/* JavaScript extracted from sanko_final.html */

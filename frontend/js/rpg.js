@@ -1,9 +1,82 @@
 var pts = { base: 0, infra: 0, docente: 0, acess: 0 };
+var forcaComunitaria = 1000;
 var navAtt = 0;
 var navAct = true;
 var tInt = null;
 var tLeft = 120;
 var isRun = false;
+
+// Funções de persistência de dados
+function saveGameData() {
+    const gameData = {
+        forcaComunitaria: forcaComunitaria,
+        pontos: { ...pts },
+        timestamp: Date.now()
+    };
+    localStorage.setItem('mapa_crialab_rpg', JSON.stringify(gameData));
+}
+
+function loadGameData() {
+    const savedData = localStorage.getItem('mapa_crialab_rpg');
+    if (savedData) {
+        try {
+            const gameData = JSON.parse(savedData);
+            forcaComunitaria = gameData.forcaComunitaria || 1000;
+            if (gameData.pontos) {
+                pts = { ...pts, ...gameData.pontos };
+            }
+            updateAllUI();
+        } catch (error) {
+            console.error('Erro ao carregar dados salvos:', error);
+        }
+    }
+}
+
+function resetGameData() {
+    if (confirm('Tem certeza que deseja resetar toda a campanha? Esta ação não pode ser desfeita.')) {
+        localStorage.removeItem('mapa_crialab_rpg');
+        forcaComunitaria = 1000;
+        pts = { base: 0, infra: 0, docente: 0, acess: 0 };
+        updateAllUI();
+        alert('Campanha resetada com sucesso!');
+    }
+}
+
+function updateAllUI() {
+    // Atualiza FC
+    const fcElement = document.getElementById('rpg-fc');
+    if (fcElement) {
+        fcElement.innerText = forcaComunitaria;
+    }
+
+    // Atualiza todas as barras
+    ['base', 'infra', 'docente', 'acess'].forEach(type => {
+        const max = (type === 'acess') ? 500 : (type === 'base' ? 800 : (type === 'infra' ? 1200 : 1500));
+        const txtElement = document.getElementById('txt-' + type);
+        const barElement = document.getElementById('bar-' + type);
+
+        if (txtElement) {
+            txtElement.innerText = `${pts[type]} / ${max}`;
+        }
+        if (barElement) {
+            barElement.style.width = `${(pts[type]/max)*100}%`;
+        }
+    });
+}
+
+function updateFC(valor) {
+    forcaComunitaria += valor;
+    const fcElement = document.getElementById('rpg-fc');
+    if (fcElement) {
+        fcElement.innerText = forcaComunitaria;
+    }
+    saveGameData(); // Salva automaticamente
+}
+
+// Carrega dados salvos quando a página é carregada
+document.addEventListener('DOMContentLoaded', function() {
+    loadGameData();
+});
 
 const deck = [
     { n: 'Chico Toledo', r: 'Teologia Libertação', h: 'Unia as lideranças em Boa Vista.', s: 'Ignora erro no Quiz.' },
@@ -35,10 +108,21 @@ function addPoints(type, amount, gameId) {
     pts[type] += amount;
     const max = (type === 'acess') ? 500 : (type === 'base' ? 800 : (type === 'infra' ? 1200 : 1500));
     if (pts[type] > max) pts[type] = max;
-    document.getElementById('txt-' + type).innerText = `${pts[type]} / ${max}`;
-    document.getElementById('bar-' + type).style.width = `${(pts[type] / max) * 100}%`;
+
+    const txtElement = document.getElementById('txt-' + type);
+    const barElement = document.getElementById('bar-' + type);
+
+    if (txtElement) {
+        txtElement.innerText = `${pts[type]} / ${max}`;
+    }
+    if (barElement) {
+        barElement.style.width = `${(pts[type] / max) * 100}%`;
+    }
+
     document.getElementById(gameId).classList.remove('active');
     alert(`Sucesso! +${amount} pontos computados!`);
+
+    saveGameData(); // Salva automaticamente quando pontos são alterados
 }
 
 function checkQuiz() {
