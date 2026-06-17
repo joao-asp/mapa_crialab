@@ -171,6 +171,14 @@ nav {
 .phase-title { font-family: var(--fonte-manchete); font-size: 46px; color: var(--alerta-vermelho); margin-bottom: 20px; text-transform: uppercase; line-height: 1; max-width: 85%; }
 .gm-speech { background: #e0e0e0; border: 2px solid var(--tinta-preta); padding: 20px; font-family: var(--fonte-leitura); font-size: 20px; color: var(--tinta-preta); margin-bottom: 15px; }
 
+/* =========================================
+   OCULTAR BARRA DE PROGRESSO (MANTENDO BOTÕES)
+   ========================================= */
+.progress-header, 
+.progress-bar {
+    display: none !important;
+}
+
 /* MINIGAMES E MODAIS */
 .minigame-modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(17,17,17,0.95); display: none; justify-content: center; align-items: center; z-index: 3000; }
 .minigame-modal-overlay.active { display: flex; animation: fadeIn 0.3s; }
