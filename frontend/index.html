@@ -17,8 +17,12 @@
 
     <nav>
         <div class="nav-logo">
-            <h1>SANKO FA</h1>
-            <span>RESGATANDO CONQUISTAS</span>
+        <!-- OPÇÃO 1: Se quiser manter como texto, é só alterar o que está escrito abaixo -->
+            <!-- <h1>NOVO NOME</h1>
+            <span>NOVO SUBTÍTULO</span> -->
+            
+            <!-- OPÇÃO 2: Se você tiver uma imagem de logo salva na pasta assets, apague o h1 e o span acima, e descomente a linha abaixo: -->
+            <img src="assets/sua-logo.png" alt="Logo do Jogo" style="height: 40px;"> -->
         </div>
 
         <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
@@ -26,13 +30,13 @@
         </button>
 
         <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('modo-jogo', this)">Painel do Mestre</button>
+            <button class="tab-btn active" onclick="switchTab('modo-jogo', this)">Jogo</button>
             <button class="tab-btn" onclick="switchTab('mapa-comemorativo', this)">Mapa das Memórias</button>
         </div>
     </nav>
 
     <div class="mobile-menu" id="mobileMenu">
-        <button class="tab-btn active" onclick="switchTabAndClose('modo-jogo', this)">Painel do Mestre</button>
+        <button class="tab-btn active" onclick="switchTabAndClose('modo-jogo', this)">Jogo</button>
         <button class="tab-btn" onclick="switchTabAndClose('mapa-comemorativo', this)">Mapa das Memórias</button>
     </div>
 
@@ -177,7 +181,7 @@
                     <div id="game-quem-sou-eu" class="game-interface">
                         <div class="game-panel-title">👤 Quem Sou Eu?</div>
                         <p style="font-family: var(--fonte-documento); font-weight: bold; margin-bottom:8px;">Cole o post-it na testa de um jogador. A equipe dá dicas para ele adivinhar!</p>
-                        <div class="challenge-box">Alvo: <span id="qse-target">Carregando...</span></div>
+                        <div class="challenge-box">Personagem: <span id="qse-target">Carregando...</span></div>
                         <button class="neo-btn btn-black w-100 mt-15 btn-claim visible" onclick="addPoints(300)">PALAVRA DESCOBERTA (+300 FORÇA)</button>
                     </div>
 

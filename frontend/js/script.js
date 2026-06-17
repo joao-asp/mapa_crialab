@@ -27,13 +27,11 @@ function initMap() {
     `;
     markerEscola.bindPopup(popupContent);
 
-    // SISTEMA DE SELECIONAR LOCAL COM CLIQUE
     map.on('click', function(e) {
         localSelecionado = e.latlng;
         if(marcadorTemporario) {
             marcadorTemporario.setLatLng(localSelecionado);
         } else {
-            // Cria um marcador preto temporário
             const tempIcon = L.divIcon({
                 className: 'custom-pin',
                 html: `<div class="pin-icon" style="background:var(--tinta-preta); border: 3px solid white; display: flex; align-items: center; justify-content: center;"><div style="width:12px; height:12px; background:white; border-radius:50%; transform: rotate(45deg);"></div></div>`,
@@ -60,7 +58,6 @@ function addUserConquista() {
         return;
     }
 
-    // CORES SORTIDAS NEO-BRUTALISTAS
     const cores = ['#ffd500', '#d90429', '#2b9348', '#3a86ff', '#ff006e', '#00bbf9'];
     const corSorteada = cores[Math.floor(Math.random() * cores.length)];
 
@@ -79,7 +76,6 @@ function addUserConquista() {
 
     adicionarPinDeMemoria(novaMemoria);
 
-    // Limpa o formulário e o marcador temporário
     document.getElementById('form-title').value = '';
     document.getElementById('form-desc').value = '';
     if(marcadorTemporario) {
@@ -96,11 +92,10 @@ function carregarMemoriasSalvas() {
 }
 
 function adicionarPinDeMemoria(memoria) {
-    let corPin = memoria.cor || '#ffd500'; // Fallback se já tiver pins antigos
+    let corPin = memoria.cor || '#ffd500';
 
     const createIconMemoria = () => L.divIcon({ 
         className: 'custom-pin', 
-        // BOLINHA NO MEIO EM VEZ DE EXCLAMAÇÃO
         html: `<div class="pin-icon" style="background:${corPin}; border: 3px solid var(--tinta-preta); display: flex; align-items: center; justify-content: center;"><div style="width:12px; height:12px; background:var(--tinta-preta); border-radius:50%; transform: rotate(45deg);"></div></div><div class="pin-pulse" style="background: ${corPin}; opacity: 0.5;"></div>`, 
         iconSize: [36,36], 
         iconAnchor: [18,36]
@@ -127,7 +122,6 @@ function abrirModalMemoria(titulo, desc) {
     document.getElementById('modal-meta').innerText = "Relato da Comunidade";
     document.getElementById('conquista-modal').classList.add('active');
     
-    // Reseta carrossel para a primeira foto
     currentSlide = 0;
     const track = document.getElementById('carousel-track');
     if(track) track.style.transform = `translateX(0)`;
@@ -210,56 +204,6 @@ function adjustFC(amount) {
     else showToast(`${amount} Força Comunitária!`, 'error');
 }
 
-function atualizarBarraProgresso(faseAtualizada) {
-    const porcentagem = (faseAtualizada / totalFasesCount) * 100;
-
-    const fill = document.getElementById("progress-fill");
-    if(fill) fill.style.width = porcentagem + "%";
-
-    const label = document.getElementById("current-phase-label");
-    if(label) label.innerText = `Fase ${faseAtualizada} de ${totalFasesCount}`;
-
-    const percent = document.getElementById("progress-percent");
-    if(percent) percent.innerText = `${Math.round(porcentagem)}%`;
-}
-
-function atualizarBotoesNavegacao() {
-    const btnPrev = document.getElementById('btn-prev-phase');
-    const btnNext = document.getElementById('btn-next-phase');
-
-    if (!btnPrev || !btnNext) return;
-
-    btnPrev.disabled = (faseAtual <= 0);
-
-    let ultimaFaseAlcancada;
-    if (faseMaxConcluida === -1) {
-        ultimaFaseAlcancada = 0;
-    } else {
-        ultimaFaseAlcancada = Math.min(faseMaxConcluida + 1, totalFasesCount);
-    }
-
-    btnNext.disabled = (faseAtual >= ultimaFaseAlcancada);
-}
-
-function voltarFase() {
-    if (faseAtual > 0) {
-        setPhase(faseAtual - 1);
-    }
-}
-
-function avancarFase() {
-    let ultimaFaseAlcancada;
-    if (faseMaxConcluida === -1) {
-        ultimaFaseAlcancada = 0;
-    } else {
-        ultimaFaseAlcancada = Math.min(faseMaxConcluida + 1, totalFasesCount);
-    }
-
-    if (faseAtual < ultimaFaseAlcancada) {
-        setPhase(faseAtual + 1);
-    }
-}
-
 function setPhase(num, btn) {
     if (btn && btn.disabled) return; 
     
@@ -276,9 +220,6 @@ function setPhase(num, btn) {
     document.querySelectorAll('.story-phase').forEach(p => p.classList.remove('active'));
     let phaseDiv = document.getElementById('phase-' + num);
     if(phaseDiv) phaseDiv.classList.add('active');
-
-    atualizarBarraProgresso(num);
-    atualizarBotoesNavegacao();
 }
 
 function concluirRodada(faseAtualDaRodada, pontos = 300) {
@@ -302,7 +243,6 @@ function concluirRodada(faseAtualDaRodada, pontos = 300) {
     if (nextFase <= totalFasesCount) {
         setPhase(nextFase);
     }
-    atualizarBotoesNavegacao();
 }
 
 function syncTimers(source) {
@@ -408,10 +348,10 @@ function updateTimerDisplay() {
 let activeGameType = null;
 let availableGames = ['quiz', 'naval', 'quem-sou-eu', 'codigo', 'memoria'];
 
-let bancoQuemSouEu = [ "Padre da Teologia da Libertação", "Prefeito de Campinas", "Carolina Maria de Jesus", "Ailton Krenak", "Diretora da Escola" ];
-let bancoCodigos = [ "MUTIRAO", "OFICIO", "RESISTENCIA", "ASSOCIACOES", "EDUCACAO" ];
-bancoQuemSouEu.sort(() => Math.random() - 0.5);
-bancoCodigos.sort(() => Math.random() - 0.5);
+// Variáveis preenchidas pelo minigames.json
+let bancoQuemSouEu = [];
+let bancoCodigos = [];
+let masterMemoryPairs = [];
 
 function drawMinigameCard() {
     if(availableGames.length === 0) { 
@@ -437,11 +377,44 @@ function setupAndOpenGame(type) {
     } else if (type === 'quem-sou-eu') {
         document.getElementById('qse-target').innerText = bancoQuemSouEu.pop() || "Trabalhador Voluntário";
     } else if (type === 'codigo') {
-        document.getElementById('codigo-resposta').innerText = bancoCodigos.pop() || "FAZENDINHA";
+        document.getElementById('codigo-resposta').innerText = bancoCodigos.pop() || "SANKO FA";
     } else if (type === 'memoria') {
         document.getElementById('memoria-escolha').style.display = 'flex';
         document.getElementById('memoria-arena').style.display = 'none';
         document.getElementById('memoria-fisico-arena').style.display = 'none';
+    } else if (type === 'quiz') {
+        const containerQuiz = document.getElementById('quiz-questions-container');
+        if(containerQuiz && quizQuestionsGlobais.length > 0) {
+            containerQuiz.innerHTML = '';
+            
+            let shuffled = [...quizQuestionsGlobais].sort(() => 0.5 - Math.random()).slice(0, 3);
+            shuffled.forEach((q) => {
+                let divObj = document.createElement('div');
+                divObj.style.marginBottom = '15px';
+                divObj.style.background = '#f9f9f9';
+                divObj.style.padding = '12px';
+                divObj.style.border = '3px dashed var(--tinta-preta)';
+
+                let p = document.createElement('p');
+                p.style.fontFamily = 'var(--fonte-documento)';
+                p.style.fontWeight = 'bold';
+                p.style.marginBottom = '10px';
+                p.innerText = q.pergunta;
+                divObj.appendChild(p);
+
+                q.opcoes.forEach((op, idx) => {
+                    let label = document.createElement('label');
+                    label.className = 'quiz-item';
+                    label.style.border = '2px solid var(--tinta-preta)';
+                    label.style.background = 'white';
+                    
+                    let marcaCorreta = idx === q.correta ? ' <strong style="color:var(--cor-acerto-verde); margin-left: 10px;">[CORRETA]</strong>' : '';
+                    label.innerHTML = `<input type="checkbox"> ${op} ${marcaCorreta}`;
+                    divObj.appendChild(label);
+                });
+                containerQuiz.appendChild(divObj);
+            });
+        }
     }
 }
 
@@ -502,12 +475,6 @@ function buildNavalGrid() {
     document.getElementById('btn-naval').classList.remove('visible');
 }
 
-let masterMemoryPairs = [
-    {id: 1, name: "Zumbi dos Palmares", desc: "Líder quilombola"},
-    {id: 2, name: "Dandara", desc: "Guerreira negra"},
-    {id: 3, name: "Carolina Maria", desc: "Escritora favelada"},
-    {id: 4, name: "Ailton Krenak", desc: "Líder indígena"}
-];
 let memoryCards = [], flippedCards = [], matchedPairs = 0;
 
 function initMemoryGame() {
@@ -555,13 +522,25 @@ function flipMemoryCard(cardEl) {
     }
 }
 
-// --- CARREGAMENTO DINÂMICO DE FASES E TABS ---
+// --- CARREGAMENTO DINÂMICO ---
+async function carregarMinigames() {
+    try {
+        const res = await fetch('minigames.json');
+        const data = await res.json();
+        bancoQuemSouEu = data.quemSouEu.sort(() => Math.random() - 0.5);
+        bancoCodigos = data.codigos.sort(() => Math.random() - 0.5);
+        masterMemoryPairs = data.memoria;
+    } catch(err) {
+        console.error("Erro ao carregar minigames.json", err);
+    }
+}
+
 async function carregarFases() {
     try {
         const resposta = await fetch('fases.json');
         const fases = await resposta.json();
         
-        totalFasesCount = fases.length - 1; // Dinâmico pelo tamanho do json
+        totalFasesCount = fases.length - 1; 
         const containerFases = document.getElementById('fases-container');
         const containerTabs = document.getElementById('timeline-tabs-container');
         
@@ -569,20 +548,19 @@ async function carregarFases() {
         if(containerTabs) containerTabs.innerHTML = '';
         
         fases.forEach((fase, index) => {
-            // 1. Cria o conteúdo da Fase
             const div = document.createElement('div');
             div.id = `phase-${fase.id}`;
             div.className = `story-phase neo-card p-20 mt-15 ${index === 0 ? 'active' : ''}`;
             
+            // Removido o <i> do fase.narrativa
             div.innerHTML = `
                 <div class="phase-year">${fase.ano}</div>
                 <div class="phase-title">${fase.titulo}</div>
-                <div class="gm-speech">📢 <i>${fase.narrativa}</i></div>
+                <div class="gm-speech">📢 ${fase.narrativa}</div>
                 <button id="btn-concluir-${fase.id}" class="neo-btn btn-yellow w-100 mt-20" style="padding: 18px; font-size: 24px;" onclick="${fase.botao_acao}">${fase.botao_texto}</button>
             `;
             containerFases.appendChild(div);
 
-            // 2. Cria a Aba (Tab) de Navegação Dinâmica
             if(containerTabs) {
                 const btnTab = document.createElement('button');
                 btnTab.id = `btn-fase-${fase.id}`;
@@ -610,27 +588,18 @@ async function carregarFases() {
     }
 }
 
-// --- CARREGAMENTO DINÂMICO DO QUIZ ---
+let quizQuestionsGlobais = [];
+
 async function carregarQuiz() {
     try {
         const resposta = await fetch('quiz.json');
-        const perguntas = await resposta.json();
-        const containerQuiz = document.getElementById('quiz-questions-container');
-        
-        if(!containerQuiz) return;
-        containerQuiz.innerHTML = '';
-
-        perguntas.forEach((pergunta) => {
-            const label = document.createElement('label');
-            label.className = 'quiz-item';
-            label.innerHTML = `<input type="checkbox"> ${pergunta}`;
-            containerQuiz.appendChild(label);
-        });
+        quizQuestionsGlobais = await resposta.json();
     } catch (erro) {
         console.error("Erro ao carregar quiz.json.", erro);
     }
 }
 
 // Inicializa tudo
+carregarMinigames();
 carregarFases();
 carregarQuiz();

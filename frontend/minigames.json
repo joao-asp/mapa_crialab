@@ -1,0 +1,25 @@
+{
+    "quemSouEu": [
+        "Líder Comunitário",
+        "Trabalhador do Mutirão",
+        "Moradora Pioneira",
+        "Enfermeiro do Postinho",
+        "Carolina Maria de Jesus",
+        "Ailton Krenak",
+        "Zumbi dos Palmares"
+    ],
+    "codigos": [
+        "MUTIRAO",
+        "OFICIO",
+        "RESISTENCIA",
+        "ASSOCIACOES",
+        "EDUCACAO",
+        "FAZENDINHA"
+    ],
+    "memoria": [
+        {"id": 1, "name": "Zumbi dos Palmares", "desc": "Líder quilombola e símbolo de resistência"},
+        {"id": 2, "name": "Dandara", "desc": "Guerreira negra que lutou pela liberdade"},
+        {"id": 3, "name": "Carolina Maria", "desc": "Escritora que relatou a vida na periferia"},
+        {"id": 4, "name": "Ailton Krenak", "desc": "Líder indígena e defensor da natureza"}
+    ]
+}
